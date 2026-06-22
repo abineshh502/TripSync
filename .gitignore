@@ -1,0 +1,9 @@
+backend/.env
+TripSyncApp/.env
+TripSyncWeb/.env.local
+
+**/node_modules/
+**/.next/
+**/.expo/
+**/__pycache__/
+*.pyc
