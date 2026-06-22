@@ -1,0 +1,66 @@
+name: TripSyncWeb E2E Tests CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  run-e2e-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python Environment
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install System Dependencies for Headless Chrome
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y google-chrome-stable xvfb libxi6 libgconf-2-4
+
+    - name: Install Python Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r TripSyncWeb/e2e-tests/requirements.txt
+
+    - name: Set up Node.js Environment
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: 'TripSyncWeb/package-lock.json'
+
+    - name: Install Frontend Node Dependencies
+      run: |
+        cd TripSyncWeb
+        npm ci
+
+    - name: Validate Next.js Production Build
+      run: |
+        cd TripSyncWeb
+        npm run build
+
+    - name: Run Sequential Selenium E2E Tests
+      run: |
+        cd TripSyncWeb
+        npm run test:e2e
+
+    - name: Upload Test Excel Report Artifact
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: TripSync-Excel-TestReport
+        path: TripSyncWeb/TripSync_TestReport.xlsx
+
+    - name: Upload Test HTML Report Dashboard Artifact
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: TripSync-HTML-TestReport
+        path: TripSyncWeb/execution-report.html
