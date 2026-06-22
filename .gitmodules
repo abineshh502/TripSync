@@ -1,0 +1,9 @@
+[submodule "TripSyncApp"]
+	path = TripSyncApp
+	url = https://github.com/abineshh502/TripSyncApp.git
+[submodule "TripSyncWeb"]
+	path = TripSyncWeb
+	url = https://github.com/abineshh502/TripSyncWeb.git
+[submodule "backend"]
+	path = backend
+	url = https://github.com/abineshh502/TripSync_Backend.git
